@@ -1,0 +1,16 @@
+Test,Metric,Value,Unit
+Baseline,legitimate_path_present,true,boolean
+Attack_Propagation,run_1_seconds,0,seconds
+Attack_Propagation,run_2_seconds,0,seconds
+Attack_Propagation,run_3_seconds,0,seconds
+Attack_Propagation,average_seconds,0,seconds
+Attack_Propagation,runs_completed,3,count
+Recovery_Time,run_1_seconds,0,seconds
+Recovery_Time,run_2_seconds,0,seconds
+Recovery_Time,run_3_seconds,0,seconds
+Recovery_Time,average_seconds,0,seconds
+Effectiveness,hijack_rate_no_mitigation_pct,100,percent
+Effectiveness,hijacks_without_mitigation,5,count
+Effectiveness,hijack_rate_with_mitigation_pct,0,percent
+Effectiveness,mitigation_block_rate_pct,100,percent
+Effectiveness,hijacks_with_mitigation,0,count
