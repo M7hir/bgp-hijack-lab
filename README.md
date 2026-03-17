@@ -29,7 +29,6 @@ This file is the main overview. Scenario-specific commands stay in each scenario
 
 ### Optional future cleanup (not required)
 
-If you want a cleaner naming scheme later, this is a good target:
 
 - `labs/base/` -> v1
 - `labs/rpki/v2/` -> v2
