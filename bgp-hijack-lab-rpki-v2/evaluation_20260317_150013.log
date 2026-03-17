@@ -1,0 +1,101 @@
+╔══════════════════════════════════════════════════╗
+║     BGP Hijack Lab — Evaluation & Measurement    ║
+╚══════════════════════════════════════════════════╝
+Timestamp: Tue Mar 17 03:00:13 PM UTC 2026
+Log file:  evaluation_20260317_150013.log
+CSV file:  evaluation_20260317_150013.csv
+Mitigation target: all
+
+━━━  Phase 1: Baseline Verification  ━━━
+Verifying clean baseline before tests...
+[OK] Baseline: 13.0.0.0/24 via legitimate path (AS200 AS300)
+
+━━━  Phase 2: Attack Propagation Time (3 runs)  ━━━
+Measuring how long BGP takes to propagate hijack from R4 to R1
+
+Run 1/3 — Injecting exact prefix hijack...
+Run 1: Hijack propagated in 0s
+R1 routing table at hijack point (Run 1):
+Routing entry for 13.0.0.0/24
+  Known via "bgp", distance 20, metric 0, best
+  Last update 00:00:01 ago
+  * 10.14.0.2, via eth2, weight 1
+
+Withdrawing attack for next run...
+Run 2/3 — Injecting exact prefix hijack...
+Run 2: Hijack propagated in 0s
+R1 routing table at hijack point (Run 2):
+Routing entry for 13.0.0.0/24
+  Known via "bgp", distance 20, metric 0, best
+  Last update 00:00:00 ago
+  * 10.14.0.2, via eth2, weight 1
+
+Withdrawing attack for next run...
+Run 3/3 — Injecting exact prefix hijack...
+Run 3: Hijack propagated in 0s
+R1 routing table at hijack point (Run 3):
+Routing entry for 13.0.0.0/24
+  Known via "bgp", distance 20, metric 0, best
+  Last update 00:00:01 ago
+  * 10.14.0.2, via eth2, weight 1
+
+Withdrawing attack for next run...
+Average attack propagation time: 0s
+
+━━━  Phase 3: Recovery Time After Withdrawal (3 runs)  ━━━
+Measuring how long BGP takes to restore legitimate path after attack stops
+
+Run 1/3 — Injecting attack then withdrawing...
+Hijack confirmed. Withdrawing now...
+Run 1: Legitimate path restored in 0s
+Run 2/3 — Injecting attack then withdrawing...
+Hijack confirmed. Withdrawing now...
+Run 2: Legitimate path restored in 0s
+Run 3/3 — Injecting attack then withdrawing...
+Hijack confirmed. Withdrawing now...
+Run 3: Legitimate path restored in 0s
+Average recovery time: 0s
+
+━━━  Phase 4: Mitigation Effectiveness  ━━━
+Testing hijack success rate WITH and WITHOUT validator-backed ROV
+
+Testing 5 attempts WITHOUT mitigation...
+  Attempt 1: HIJACKED
+  Attempt 2: HIJACKED
+  Attempt 3: HIJACKED
+  Attempt 4: HIJACKED
+  Attempt 5: HIJACKED
+Hijack success rate WITHOUT mitigation: 100% (5/5)
+
+Testing 5 attempts WITH mitigation applied (all)...
+  Attempt 1: HIJACKED (mitigation failed)
+  Attempt 2: HIJACKED (mitigation failed)
+  Attempt 3: HIJACKED (mitigation failed)
+  Attempt 4: HIJACKED (mitigation failed)
+  Attempt 5: HIJACKED (mitigation failed)
+Hijack success rate WITH mitigation: 100% (5/5)
+Mitigation block rate: 0%
+
+━━━  Phase 5: Mitigation Application Time  ━━━
+Measuring how long mitigation takes to block an active hijack
+
+Active hijack confirmed. Applying mitigation now...
+TIMEOUT: Mitigation did not block hijack within 30s
+
+━━━  Evaluation Summary  ━━━
+
+┌─────────────────────────────────────────────────────┐
+│              RESULTS SUMMARY                        │
+├─────────────────────────────────────────────────────┤
+│ Avg attack propagation time:    0s                     │
+│ Avg recovery time after attack: 0s                     │
+│ Hijack success (no mitigation): 100%                   │
+│ Hijack success (with RPKI-ROV all): 100%           │
+│ Mitigation block rate:          0%                  │
+└─────────────────────────────────────────────────────┘
+
+Full log:  evaluation_20260317_150013.log
+CSV data:  evaluation_20260317_150013.csv
+
+The CSV file can be opened in Excel/LibreOffice for charts.
+================================================

@@ -1,0 +1,24 @@
+{
+  "slurmVersion": 1,
+  "validationOutputFilters": {
+    "prefixFilters": [],
+    "bgpsecFilters": []
+  },
+  "locallyAddedAssertions": {
+    "prefixAssertions": [
+      {
+        "asn": 300,
+        "prefix": "13.0.0.0/24",
+        "maxPrefixLength": 24,
+        "comment": "Victim AS300 is authorized to originate 13.0.0.0/24"
+      },
+      {
+        "asn": 400,
+        "prefix": "14.0.0.0/24",
+        "maxPrefixLength": 24,
+        "comment": "Attacker AS400 is authorized only for its own prefix"
+      }
+    ],
+    "bgpsecAssertions": []
+  }
+}

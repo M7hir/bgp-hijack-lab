@@ -7,6 +7,101 @@ Ubuntu 22.04 machine.
 
 ---
 
+## Workspace Organization (Simple View)
+
+Use the repository as it is currently organized:
+
+- `bgp-hijack-lab/` -> **v1 (base lab)**
+- `bgp-hijack-lab-rpki-v2/` -> **v2 (RPKI-enabled lab)**
+- `bgp-beyond-extensions-v3/` -> **v3 (advanced extensions)**
+
+You do not need to rename or move folders to run the project.
+
+### Which folder should I use?
+
+| Goal | Folder | Topology used |
+|------|--------|---------------|
+| Run validated baseline lab | `bgp-hijack-lab/` | `bgp-hijack-lab/topology.yaml` |
+| Test RPKI lab (still being validated) | `bgp-hijack-lab-rpki-v2/` | `bgp-hijack-lab-rpki-v2/topology.yaml` |
+| Run advanced extension scripts | `bgp-beyond-extensions-v3/` | Uses **v1 topology** (`bgp-hijack-lab/topology.yaml`) |
+
+This file is the main overview. Scenario-specific commands stay in each scenario README.
+
+### Optional future cleanup (not required)
+
+If you want a cleaner naming scheme later, this is a good target:
+
+- `labs/base/` -> v1
+- `labs/rpki/v2/` -> v2
+- `labs/rpki/v3/` -> v3
+- `docs/results/evaluations/` -> CSV outputs
+- `docs/sessions/` -> session notes/transcripts
+
+---
+
+## Validation Status
+
+| Version | Folder | Status | Notes |
+|--------|--------|--------|------|
+| v1 | `bgp-hijack-lab/` | Validated | Baseline attacks, mitigation flow, and evaluation are complete and reproducible. |
+| v2 (RPKI) | `bgp-hijack-lab-rpki-v2/` | Needs full validation | RPKI workflow exists, but full end-to-end validation is still pending. |
+| v3 (Beyond Extensions) | `bgp-beyond-extensions-v3/` | Not validated | Scripts and scenarios are present, but no full validation has been completed yet. |
+
+Validation priority for ongoing work:
+
+1. Fully validate v2 RPKI path first (baseline -> attack -> mitigation -> evaluation).
+2. For v3, validate each script on v1 first (current integration path).
+3. Port each validated v3 script to v2 and re-validate on v2.
+
+---
+
+## Topology Per Scenario
+
+- v1 (`bgp-hijack-lab/`) uses `bgp-hijack-lab/topology.yaml` (`name: bgp-hijack`).
+- v2 (`bgp-hijack-lab-rpki-v2/`) uses `bgp-hijack-lab-rpki-v2/topology.yaml` (`name: bgp-hijack-rpki`) and adds the `rpki` validator node.
+- v3 (`bgp-beyond-extensions-v3/`) does not contain its own `topology.yaml`; extension scripts are intended to run on the deployed **v1 topology**.
+
+### v3 Validation and Migration Policy
+
+- Current implementation path: v3 scripts run on v1 topology.
+- Validation order for v3 scripts:
+     1. Validate each script on v1 first.
+     2. After it is confirmed working, port and validate the same script on v2.
+- Long-term target: make v2 the primary baseline for v3 extensions once script parity is achieved.
+
+---
+
+## What Changed Beyond README
+
+Between v1 and v2, non-README changes include:
+
+- Added v2-only files:
+     - `configs/rpki/slurm.json`
+     - `configs/rpki/run-routinator.sh`
+     - `scripts/validator_status.sh`
+     - `scripts/full_deployment_demo.sh`
+     - `session.txt`
+     - v2 evaluation outputs (`evaluation_20260317_150013.log`, `evaluation_20260317_150013.csv`)
+- Modified shared filenames (content differs from v1):
+     - `bootstrap.sh`, `topology.yaml`
+     - `configs/r1/daemons`, `configs/r2/daemons`
+     - `scripts/apply_mitigation.sh`, `scripts/remove_mitigation.sh`
+     - `scripts/verify.sh`, `scripts/evaluate.sh`
+     - `scripts/capture_bgp.sh`, `scripts/partial_deployment_demo.sh`
+     - `scripts/start_exact_hijack.sh`, `scripts/start_subprefix_hijack.sh`, `scripts/stop_attack.sh`
+
+v3 contributes extension scripts and GoRTR VRP JSONs in its own folder; it does not ship a separate topology file.
+
+---
+
+## Evaluation Artifact Provenance
+
+- Root-level `evaluation_20260316_205110.csv` is from the **v1** workflow.
+- `bgp-hijack-lab-rpki-v2/evaluation_20260317_150013.csv` and `.log` are from **v2** runs.
+- v3 currently has no fully validated evaluation artifact set yet.
+
+---
+
 ## Topology
 
 ```
