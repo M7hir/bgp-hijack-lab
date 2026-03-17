@@ -95,7 +95,7 @@ v3 contributes extension scripts and GoRTR VRP JSONs in its own folder; it does 
 
 ## Evaluation Artifact Provenance
 
-- Root-level `evaluation_20260316_205110.csv` is from the **v1** workflow.
+- `bgp-hijack-lab/evaluation_20260316_205110.csv` is from the **v1** workflow.
 - `bgp-hijack-lab-rpki-v2/evaluation_20260317_150013.csv` and `.log` are from **v2** runs.
 - v3 currently has no fully validated evaluation artifact set yet.
 
