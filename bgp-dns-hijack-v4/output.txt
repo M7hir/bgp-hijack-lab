@@ -1,0 +1,414 @@
+sudo bash rebuild.sh
+[sudo] password for bgp: 
+╔══════════════════════════════════════════╗
+║  BGP DNS Hijack Lab v4 — Clean Rebuild   ║
+╚══════════════════════════════════════════╝
+
+[0/8] Destroying any existing lab...
+  Done.
+
+[1/8] Creating vtysh.conf for all routers...
+  configs/r1/vtysh.conf created
+  configs/r2/vtysh.conf created
+  configs/r3/vtysh.conf created
+  configs/r4/vtysh.conf created
+  configs/r5/vtysh.conf created
+  configs/r6/vtysh.conf created
+
+[2/8] Writing fixed FRR configs...
+  r1 (AS100) written
+  r2 (AS200) written
+  r3 (AS300) written
+  r4 (AS400) written
+  r5 (AS500) written
+  r6 (AS600) written
+
+[3/8] Writing fixed DNS configs...
+  legit-dnsmasq.conf written
+  fake-dnsmasq.conf written
+  unbound.conf written
+
+[4/8] Writing topology.yaml...
+  topology.yaml written
+
+[5/8] Deploying lab...
+INFO[0000] Containerlab v0.54.2 started                 
+INFO[0000] Parsing & checking topology file: topology.yaml 
+WARN[0000] Unable to load kernel module "ip6_tables" automatically "load ip6_tables failed: exec format error" 
+INFO[0000] Creating lab directory: /home/bgp/bgp/bgp-dns-hijack-v4/clab-bgp-dns-hijack 
+INFO[0001] Creating container: "client"                 
+INFO[0001] Creating container: "r1"                     
+INFO[0001] Creating container: "r4"                     
+INFO[0001] Creating container: "fake-dns"               
+INFO[0002] Creating container: "r2"                     
+INFO[0002] Created link: r4:eth2 <--> fake-dns:eth1     
+INFO[0002] Creating container: "r5"                     
+INFO[0002] Creating container: "r6"                     
+INFO[0002] Created link: r1:eth2 <--> r4:eth1           
+INFO[0002] Creating container: "r3"                     
+INFO[0003] Created link: r1:eth1 <--> r2:eth1           
+INFO[0003] Creating container: "dns-server"             
+INFO[0004] Created link: r2:eth2 <--> r3:eth1           
+INFO[0004] Created link: r6:eth2 <--> client:eth1       
+INFO[0004] Created link: r2:eth3 <--> r5:eth1           
+INFO[0004] Created link: r5:eth2 <--> r6:eth1           
+INFO[0004] Created link: r3:eth2 <--> dns-server:eth1   
+INFO[0005] Adding containerlab host entries to /etc/hosts file 
+INFO[0005] Adding ssh config for containerlab nodes     
+INFO[0005] 🎉 New containerlab version 0.74.1 is available! Release notes: https://containerlab.dev/rn/0.74/#0741
+Run 'containerlab version upgrade' to upgrade or go check other installation options at https://containerlab.dev/install/ 
++---+--------------------------------+--------------+-----------------------------+-------+---------+-----------------+-----------------------+
+| # |              Name              | Container ID |            Image            | Kind  |  State  |  IPv4 Address   |     IPv6 Address      |
++---+--------------------------------+--------------+-----------------------------+-------+---------+-----------------+-----------------------+
+| 1 | clab-bgp-dns-hijack-client     | 91b6231f4541 | dns-lab:latest              | linux | running | 172.20.20.7/24  | 2001:172:20:20::7/64  |
+| 2 | clab-bgp-dns-hijack-dns-server | fcb2563560f4 | dns-lab:latest              | linux | running | 172.20.20.17/24 | 2001:172:20:20::11/64 |
+| 3 | clab-bgp-dns-hijack-fake-dns   | 93d8f9367fab | dns-lab:latest              | linux | running | 172.20.20.4/24  | 2001:172:20:20::4/64  |
+| 4 | clab-bgp-dns-hijack-r1         | dceb15e8c1cb | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.8/24  | 2001:172:20:20::8/64  |
+| 5 | clab-bgp-dns-hijack-r2         | 728ac4f290c4 | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.10/24 | 2001:172:20:20::a/64  |
+| 6 | clab-bgp-dns-hijack-r3         | 7cc7c811232d | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.12/24 | 2001:172:20:20::c/64  |
+| 7 | clab-bgp-dns-hijack-r4         | 38654e1ebe49 | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.6/24  | 2001:172:20:20::6/64  |
+| 8 | clab-bgp-dns-hijack-r5         | a4baff533dba | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.16/24 | 2001:172:20:20::10/64 |
+| 9 | clab-bgp-dns-hijack-r6         | cef10ca244ce | quay.io/frrouting/frr:9.1.0 | linux | running | 172.20.20.14/24 | 2001:172:20:20::e/64  |
++---+--------------------------------+--------------+-----------------------------+-------+---------+-----------------+-----------------------+
+  Enabling IP forwarding on routers...
+
+[6/8] Waiting 90s for BGP convergence...
+  (host containers configured AFTER BGP stabilizes)
+
+[7/8] Configuring host containers (interfaces now stable)...
+  Configuring dns-server...
+    done
+  Configuring fake-dns...
+    done
+  Configuring client...
+    done
+  Waiting 10s for services to start...
+
+[8/8] Verifying lab...
+
+╔══════════════════════════════════════════╗
+║            Verification                  ║
+╚══════════════════════════════════════════╝
+
+[1] BGP sessions on R1 (AS100):
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.12.0.2       4        200        18        17       15    0    0 00:00:40           11       15 N/A
+10.14.0.2       4        400        17        17       15    0    0 00:00:40            4       15 N/A
+
+Total number of neighbors 2
+
+[2] BGP sessions on R6 (AS600):
+
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+10.56.0.1       4        500        18        18       15    0    0 00:01:40           13       15 N/A
+
+Total number of neighbors 1
+
+[3] Route to 13.0.0.0/24 from R6:
+Paths: (1 available, best #1, table default)
+      Origin IGP, valid, external, best (First path received)
+
+[4] Ping 13.0.0.50 from client:
+  ✓ 13.0.0.50 reachable
+
+[5] DNS test from client (direct to 13.0.0.50):
+  www.victim.lab = 13.0.0.100
+
+[6] DNS test from client (through caching resolver):
+  www.victim.lab = 13.0.0.100
+
+╔══════════════════════════════════════════╗
+║  ✓ Lab is READY!                         ║
+║                                          ║
+║  Run: bash scripts/full_demo.sh          ║
+║   or: bash scripts/evaluate_dns_chain.sh ║
+╚══════════════════════════════════════════╝
+bgp@bgphijack:~/bgp/bgp-dns-hijack-v4$ bash scripts/full_demo.sh
+╔══════════════════════════════════════════════════════════╗
+║  BGP Hijack -> DNS Cache Poisoning — Full Demo          ║
+║  Attack Chain + Mitigation                               ║
+╚══════════════════════════════════════════════════════════╝
+
+Press ENTER to proceed through each phase...
+
+
+────────────────────────────────────────────────────────────
+=== Phase 1: DNS Baseline (No Attack) ===
+
+[1] Direct query to DNS server (13.0.0.50) from client:
+    dig @13.0.0.50 www.victim.lab
+13.0.0.100
+
+[2] Query through caching resolver from client:
+    dig @127.0.0.1 www.victim.lab
+13.0.0.100
+
+[3] Traceroute from client to DNS server:
+traceroute to 13.0.0.50 (13.0.0.50), 30 hops max, 60 byte packets
+ 1  10.60.0.1  5.393 ms
+ 2  10.56.0.1  4.673 ms
+ 3  10.25.0.1  4.391 ms
+ 4  10.23.0.2  0.329 ms
+ 5  13.0.0.50  0.315 ms
+
+[4] Expected: www.victim.lab -> 13.0.0.100 (legitimate)
+    Path: Client -> R6(AS600) -> R5(AS500) -> R2(AS200) -> R3(AS300) -> DNS
+
+=== Baseline Complete ===
+────────────────────────────────────────────────────────────
+Press ENTER to launch the attack...
+
+────────────────────────────────────────────────────────────
+=== Phase 2: Launching Sub-Prefix Hijack on DNS Server ===
+
+[1] AS400 (Attacker) announcing 13.0.0.0/25 (sub-prefix of victim's /24)...
+    This covers the DNS server at 13.0.0.50
+
+[2] Waiting 10s for BGP convergence...
+[3] Verifying hijack propagation on R2 (Transit):
+BGP routing table entry for 13.0.0.0/25, version 16
+Paths: (1 available, best #1, table default)
+  Advertised to non peer-group peers:
+  10.12.0.1 10.23.0.2 10.25.0.2
+  100 400
+    10.12.0.1 from 10.12.0.1 (1.1.1.1)
+      Origin IGP, valid, external, best (First path received)
+      Last update: Fri Mar 20 14:58:58 2026
+
+[4] Verifying hijack propagation on R6 (Client's AS):
+BGP routing table entry for 13.0.0.0/25, version 16
+Paths: (1 available, best #1, table default)
+  Advertised to non peer-group peers:
+  10.56.0.1
+  500 200 100 400
+    10.56.0.1 from 10.56.0.1 (5.5.5.5)
+      Origin IGP, valid, external, best (First path received)
+      Last update: Fri Mar 20 14:58:57 2026
+
+=== Sub-Prefix Hijack Active ===
+    DNS queries to 13.0.0.50 now route to AS400 (attacker)
+────────────────────────────────────────────────────────────
+Press ENTER to verify DNS poisoning...
+
+────────────────────────────────────────────────────────────
+=== Phase 3: Verifying DNS Poisoning During Attack ===
+
+[1] Flush client's DNS cache (restart unbound)...
+
+[2] Direct query to 13.0.0.50 from client (now routed to attacker):
+    www.victim.lab -> 14.0.0.66
+    *** DNS POISONED — Response from ATTACKER (14.0.0.66) ***
+
+[3] Query through caching resolver (populates cache with poison):
+    www.victim.lab -> 14.0.0.66
+
+[4] Full DNS response showing TTL (notice 86400s attacker TTL):
+;; ANSWER SECTION:
+www.victim.lab.		180	IN	A	14.0.0.66
+
+;; Query time: 0 msec
+;; SERVER: 13.0.0.50#53(13.0.0.50) (UDP)
+;; WHEN: Fri Mar 20 14:59:15 UTC 2026
+
+[5] Traceroute from client to 13.0.0.50 (should show attacker path):
+traceroute to 13.0.0.50 (13.0.0.50), 30 hops max, 60 byte packets
+ 1  10.60.0.1  0.088 ms
+ 2  10.56.0.1  0.204 ms
+ 3  10.25.0.1  0.287 ms
+ 4  10.12.0.1  0.071 ms
+ 5  10.14.0.2  0.235 ms
+ 6  13.0.0.50  0.226 ms
+
+[6] Compare: BGP table on R6 for 13.0.0.0/24 vs 13.0.0.0/25
+    --- Legitimate /24 route ---
+Paths: (1 available, best #1, table default)
+      Origin IGP, valid, external, best (First path received)
+    --- Hijacked /25 route ---
+Paths: (1 available, best #1, table default)
+      Origin IGP, valid, external, best (First path received)
+
+=== DNS Poisoning Verified ===
+────────────────────────────────────────────────────────────
+Press ENTER to withdraw the hijack...
+
+────────────────────────────────────────────────────────────
+=== Phase 4: Withdrawing Hijack ===
+
+[1] AS400 withdrawing 13.0.0.0/25...
+[2] Waiting 10s for BGP withdrawal propagation...
+[3] Confirm withdrawal — R6 should no longer have /25 route:
+% Network not in table
+
+=== Hijack Withdrawn ===
+────────────────────────────────────────────────────────────
+Press ENTER to verify cache persistence...
+
+────────────────────────────────────────────────────────────
+================================================
+  DNS Cache Persistence Verification
+  BGP hijack withdrawn — routing is clean
+================================================
+
+Confirming BGP hijack is withdrawn...
+  ✓ Confirmed: 13.0.0.0/25 not in BGP table (hijack withdrawn)
+
+Checking direct vs cached DNS every 10 seconds...
+Watch for: Direct=legitimate, Cached=poisoned (until TTL expires)
+
+  Time   | Direct @13.0.0.50 | Cached @127.0.0.1 | TTL remaining
+  ────────────────────────────────────────────────────────
+  t+0   s | 13.0.0.100 | 14.0.0.66 ✗ | 165s
+  t+11  s | 13.0.0.100 | 14.0.0.66 ✗ | 154s
+  t+21  s | 13.0.0.100 | 14.0.0.66 ✗ | 143s
+  t+32  s | 13.0.0.100 | 14.0.0.66 ✗ | 132s
+  t+43  s | 13.0.0.100 | 14.0.0.66 ✗ | 121s
+  t+54  s | 13.0.0.100 | 14.0.0.66 ✗ | 110s
+  t+65  s | 13.0.0.100 | 14.0.0.66 ✗ | 100s
+  t+76  s | 13.0.0.100 | 14.0.0.66 ✗ | 89s
+  t+86  s | 13.0.0.100 | 14.0.0.66 ✗ | 78s
+  t+97  s | 13.0.0.100 | 14.0.0.66 ✗ | 67s
+  t+108 s | 13.0.0.100 | 14.0.0.66 ✗ | 57s
+  t+119 s | 13.0.0.100 | 14.0.0.66 ✗ | 46s
+  t+129 s | 13.0.0.100 | 14.0.0.66 ✗ | 35s
+  t+140 s | 13.0.0.100 | 14.0.0.66 ✗ | 24s
+  t+151 s | 13.0.0.100 | 14.0.0.66 ✗ | 14s
+  t+161 s | 13.0.0.100 | 14.0.0.66 ✗ | 3s
+  t+172 s | 13.0.0.100 | 13.0.0.100 ✓ | 300s
+
+  Cache expired — poisoning window ended
+
+================================================
+  Results Summary
+================================================
+
+  ✓ Cache poisoning confirmed AFTER BGP withdrawal
+  The routing layer was clean but DNS was still poisoned
+  ✓ Cache expiry observed within demo window
+  After expiry, legitimate answer restored
+
+  Key Finding for Report:
+  Demo uses TTL=120s for live observation.
+  Real-world attackers use TTL=86400s (24 hours).
+  The persistence mechanism is identical — only duration differs.
+  Birge-Lee et al. (USENIX Sec 2018) documented this exact
+  technique used against major Certificate Authorities.
+================================================
+────────────────────────────────────────────────────────────
+Press ENTER to apply ROV mitigation...
+
+────────────────────────────────────────────────────────────
+================================================
+[MITIGATION] Applying ROV filter on R1 (AS100)
+================================================
+
+Blocking AS400 announcements for victim prefix space:
+  13.0.0.0/24 — exact prefix hijack
+  13.0.0.0/25 — sub-prefix hijack (DNS server range)
+
+
+Hello, this is FRRouting (version 9.1_git).
+Copyright 1996-2005 Kunihiro Ishiguro, et al.
+
+r1# configure terminal
+r1(config)# no ip prefix-list BLOCK_HIJACK
+r1(config)# ip prefix-list BLOCK_HIJACK seq 5 deny 13.0.0.0/24
+r1(config)# ip prefix-list BLOCK_HIJACK seq 6 deny 13.0.0.0/25
+r1(config)# ip prefix-list BLOCK_HIJACK seq 10 permit 0.0.0.0/0 le 32
+r1(config)# route-map VALIDATE_R4_IN permit 10
+r1(config-route-map)#  match ip address prefix-list BLOCK_HIJACK
+r1(config-route-map)# exit
+r1(config)# route-map VALIDATE_R4_IN deny 20
+r1(config-route-map)# exit
+r1(config)# router bgp 100
+r1(config-router)#  address-family ipv4 unicast
+r1(config-router-af)#   neighbor 10.14.0.2 route-map VALIDATE_R4_IN in
+r1(config-router-af)#  exit-address-family
+r1(config-router)# exit
+r1(config)# end
+r1# clear bgp 10.14.0.2 in
+r1# write memory
+Note: this version of vtysh never writes vtysh.conf
+Building Configuration...
+Error renaming /etc/frr/frr.conf to /etc/frr/frr.conf.sav: Resource busy
+Integrated configuration saved to /etc/frr/frr.conf
+[OK]
+r1# 
+
+[OK] ROV mitigation applied and BGP session reset
+
+Verifying filter is active:
+route-map: VALIDATE_R4_IN Invoked: 0 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 0
+  Match clauses:
+    ip address prefix-list BLOCK_HIJACK
+--
+route-map: VALIDATE_R4_IN Invoked: 8 Optimization: enabled Processed Change: false
+ permit, sequence 10 Invoked 8
+  Match clauses:
+    ip address prefix-list BLOCK_HIJACK
+
+Verifying prefix-list:
+ZEBRA: ip prefix-list BLOCK_HIJACK: 3 entries
+   seq 5 deny 13.0.0.0/24
+   seq 6 deny 13.0.0.0/25
+   seq 10 permit 0.0.0.0/0 le 32
+BGP: ip prefix-list BLOCK_HIJACK: 3 entries
+   seq 5 deny 13.0.0.0/24
+   seq 6 deny 13.0.0.0/25
+   seq 10 permit 0.0.0.0/0 le 32
+
+================================================
+Mitigation active. Now try the hijack:
+  bash scripts/start_dns_hijack.sh
+Expected: DNS should stay at 13.0.0.100
+================================================
+────────────────────────────────────────────────────────────
+Press ENTER to test mitigation blocks the attack...
+
+────────────────────────────────────────────────────────────
+=== Phase 7: Proving ROV Mitigation Blocks the Attack ===
+
+=== Phase 2: Launching Sub-Prefix Hijack on DNS Server ===
+
+[1] AS400 (Attacker) announcing 13.0.0.0/25 (sub-prefix of victim's /24)...
+    This covers the DNS server at 13.0.0.50
+
+[2] Waiting 10s for BGP convergence...
+[3] Verifying hijack propagation on R2 (Transit):
+% Network not in table
+
+[4] Verifying hijack propagation on R6 (Client's AS):
+% Network not in table
+
+=== Sub-Prefix Hijack Active ===
+    DNS queries to 13.0.0.50 now route to AS400 (attacker)
+
+[1] Check if hijack propagated past R1:
+    ✓ 13.0.0.0/25 NOT in R6 BGP table — hijack blocked by R1
+
+[2] DNS test with mitigation active (should stay legitimate):
+    Direct:  www.victim.lab -> 13.0.0.100
+    Cached:  www.victim.lab -> 13.0.0.100
+
+*** MITIGATION SUCCESSFUL ***
+Both direct and cached DNS return legitimate answer
+BGP hijack blocked — DNS cache never poisoned
+
+[3] Cleaning up...
+    Lab restored to clean state
+────────────────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  Demo Complete                                           ║
+║                                                          ║
+║  Key Finding: A brief BGP sub-prefix hijack produces     ║
+║  DNS cache poisoning that persists for HOURS after       ║
+║  the routing attack ends.                                ║
+║                                                          ║
+║  Mitigation: ROV filtering on R1 blocks the hijack      ║
+║  before it propagates — DNS stays clean.                 ║
+║                                                          ║
+║  Attack: seconds  |  Poison: TTL-dependent               ║
+║  ROV blocks: <5s  |  DNS stays: clean                    ║
+╚══════════════════════════════════════════════════════════╝
+
