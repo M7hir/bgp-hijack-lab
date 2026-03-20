@@ -7,6 +7,18 @@ poisoning with persistent application-layer impact. The attack chain shows
 that a brief routing-layer attack (seconds) produces DNS poisoning that
 persists for hours after the BGP hijack ends.
 
+## Automated Workflow (Recommended)
+
+This lab now includes two reliable, end-to-end automation paths:
+
+- `rebuild.sh`: Fully rebuilds and redeploys the lab from a clean state,
+    reconfigures all containers, waits for convergence, and performs verification.
+- `scripts/full_demo.sh`: Runs the full attack and mitigation narrative in order
+    (baseline -> hijack -> poisoning -> withdrawal -> persistence -> mitigation check).
+
+These scripts are the recommended way to run the project for reproducible results.
+Use the manual steps only if you need fine-grained debugging or custom experiments.
+
 **Novelty:** We believe this is a good reproducible
 emulated lab that demonstrates the complete BGP hijack → DNS cache poisoning in modern systems.
 → persistent application-layer impact chain described in Birge-Lee et al.
